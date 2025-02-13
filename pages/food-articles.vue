@@ -2,7 +2,7 @@
   <div class="food-articles p-4 bg-gray-50 min-h-screen">
     <div class="flex justify-between items-center mb-4">
       <h1 class="text-xl font-medium">美食專欄</h1>
-      <button class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+      <button @click="showPopup = true" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
         <span class="text-xl">+</span>
       </button>
     </div>
@@ -15,9 +15,8 @@
           <div>
             <div class="font-medium">Sandy</div>
             <div class="text-sm text-gray-500 flex items-center">
-              <i class="pi pi-map-marker mr-1 text-xs">
-                <ㄑ /i>
-                  築間
+              <i class="pi pi-map-marker mr-1 text-xs"></i>
+              築間
             </div>
           </div>
           <div class="ml-auto text-sm text-gray-500">55分鐘</div>
@@ -25,11 +24,7 @@
 
         <!-- 評分區 -->
         <div class="rating mb-2">
-          評分：
-          <div class="inline-flex">
-            <i v-for="i in 3" :key="i" class="pi pi-star-fill text-yellow-400"></i>
-            <i v-for="i in 2" :key="i + 3" class="pi pi-star text-gray-300"></i>
-          </div>
+          <StarRating v-model="articleRating" />
         </div>
 
         <!-- 評論區 -->
@@ -54,13 +49,8 @@
         </div>
 
         <!-- 圖片區 -->
-        <div class="images grid grid-cols-2 gap-2 mb-3">
-          <div class="aspect-square bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
-            圖片
-          </div>
-          <div class="aspect-square bg-gray-200 rounded-lg flex items-center justify-center text-gray-400">
-            圖片
-          </div>
+        <div class="mb-3 flex justify-center">
+          <ImageGrid :images="articleImages" size="small" />
         </div>
 
         <!-- 按鈕區 -->
@@ -71,34 +61,33 @@
       </div>
     </div>
 
-    <!-- 底部導航欄 -->
-    <div class="bottom-nav fixed bottom-0 left-0 right-0 bg-gray-100 border-t">
-      <div class="flex justify-around py-3">
-        <NuxtLink to="/nearby-restaurants" class="nav-item flex flex-col items-center">
-          <i class="pi pi-map-marker mb-1"></i>
-          <span class="text-xs">附近餐廳</span>
-        </NuxtLink>
+    <!-- 使用底部導航欄組件 -->
+    <BottomNavBar />
 
-        <NuxtLink to="/food-articles" class="nav-item flex flex-col items-center active">
-          <i class="pi pi-book mb-1"></i>
-          <span class="text-xs">美食專欄</span>
-        </NuxtLink>
-
-        <NuxtLink to="/saved-items" class="nav-item flex flex-col items-center">
-          <i class="pi pi-bookmark mb-1"></i>
-          <span class="text-xs">最近儲存</span>
-        </NuxtLink>
-
-        <NuxtLink to="/my-account" class="nav-item flex flex-col items-center">
-          <i class="pi pi-user mb-1"></i>
-          <span class="text-xs">我的帳號</span>
-        </NuxtLink>
-      </div>
-    </div>
+    <!-- 加入 popup 組件 -->
+    <popup v-if="showPopup" @close="showPopup = false" @submit="handleSubmit" />
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
+import BottomNavBar from '~/components/BottomNavBar.vue'
+import ImageGrid from '~/components/ImageGrid.vue'
+import StarRating from '~/components/StarRating.vue'
+import popup from '~/components/popup.vue'
+
+const showPopup = ref(false)
+const articleRating = ref(3)
+
+const articleImages = ref([
+  'https://placekitten.com/200/200',
+  'https://placekitten.com/201/201'
+])
+
+const handleSubmit = (formData) => {
+  console.log('提交的表單數據：', formData)
+  showPopup.value = false
+}
 </script>
 
 <style scoped>
